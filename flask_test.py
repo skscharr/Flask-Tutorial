@@ -12,9 +12,6 @@ PASSWORD = 'default'
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-if __name__ == '__main__':
-  app.run()
-
 def connect_db():
   return sqlite3.connect(app.config['DATABASE'])
 
@@ -37,15 +34,15 @@ def teardown_request(exception):
 @app.route('/')
 def show_entries():
   cur = g.db.execute('select title, text from entries order by id desc')
-  entries = [dic(title=row[0], text=row[1]) for row in cur.fetchall()]
+  entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]
   return render_template('show_entries.html', entries=entries)
 
 @app.route('/add', methods=['POST'])
 def add_entry():
   if not session.get('logged_in'):
-    abort(401)
+      abort(401)
   g.db.execute('insert into entries (title, text) values (?, ?)',
-    [request.form['title'], request.form['text']])
+               [request.form['title'], request.form['text']])
   g.db.commit()
   flash('New entry was successfully posted')
   return redirect(url_for('show_entries'))
@@ -67,5 +64,8 @@ def login():
 @app.route('/logout')
 def logout():
   session.pop('logged_in', None)
-  flas('You were logged out')
+  flash('You were logged out')
   return redirect(url_for('show_entries'))
+
+if __name__ == '__main__':
+  app.run(debug=True)

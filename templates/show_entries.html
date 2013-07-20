@@ -7,11 +7,11 @@
         <dd><input type=text size=30 name=title>
         <dt>Text:
         <dd><textarea name=text rows=5 cols=40></textarea>
-        <dd><input type=submit value=Share>
+        <dd><input type=submit value=Share class='button'>
       </dl>
     </form>
   {% endif %}
-  <ul> class=entries>
+  <ul class=entries>
     {% for entry in entries %}
       <li><h2>{{ entry.title }}</h2>{{ entry.text|safe  }}
     {% else %}
@@ -19,3 +19,19 @@
     {% endfor %}
   </ul>
 {% endblock %}
+
+<script src='js/vendor/jquery-1.8.3.min.js'></script>
+
+<script>
+$(document).ready(function () {
+  
+  $('.btn').on('click', function() {
+    $('.add_entry_form').addClass('show');
+  })
+
+  $('.button').on('click', function(){
+    li.prependTo('.entries');
+    $('.add-entry-form').removeClass('show');
+  })
+});
+</script>
